@@ -27,11 +27,11 @@ public class Controller {
         return empServ.addEmployee(employee);
     }
 
-    // @RequestMapping(method = RequestMethod.GET)
-    // public List<Employee> getEmployeeByName(@RequestParam(name="name") String employeeName)
-    // {
-    //     return empServ.findEmployeeByName(employeeName);
-    // }
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Employee> getEmployeeList()
+    {
+         return empServ.getEmployeeList();
+    }
 }
 
 

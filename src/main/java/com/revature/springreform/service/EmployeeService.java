@@ -22,10 +22,10 @@ public class EmployeeService {
         return empRepo.save(employee);
     }
 
-    // public List<Employee> findEmployeeByName(String name)
-    // {
-    //     return empRepo.findByName(name);
-    // }
+     public List<Employee> getEmployeeList()
+     {
+         return empRepo.findAll();
+     }
 
 }
 
