@@ -1,10 +1,10 @@
 package com.revature.springreform.controllers;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.springreform.model.Employee;
@@ -31,6 +31,12 @@ public class Controller {
     public List<Employee> getEmployeeList()
     {
          return empServ.getEmployeeList();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "id")
+    public Optional<Employee> getEmployeeById(@RequestBody Employee employee)
+    {
+         return empServ.getEmployeeById(employee);
     }
 }
 

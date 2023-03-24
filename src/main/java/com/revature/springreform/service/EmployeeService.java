@@ -1,6 +1,7 @@
 package com.revature.springreform.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,18 @@ public class EmployeeService {
     
     public Employee addEmployee(Employee employee)
     {
-        empRepo.findById(employee.getEmpId());
+        empRepo.findById(employee.getEmpid());
         return empRepo.save(employee);
     }
 
      public List<Employee> getEmployeeList()
      {
          return empRepo.findAll();
+     }
+
+     public Optional<Employee> getEmployeeById(Employee employee)
+     {
+         return empRepo.findById(employee.getEmpid()); 
      }
 
 }
