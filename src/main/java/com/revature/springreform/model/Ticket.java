@@ -1,24 +1,42 @@
-// package com.revature.springreform.model;
-// import javax.persistence.*;
-// import lombok.Data;
+package com.revature.springreform.model;
 
-// @Entity
-// public @Data class Ticket {
+import java.util.ArrayList;
+import java.util.List;
 
-//     @Id //specifies a primary key should be made
-//     @GeneratedValue(strategy= GenerationType.AUTO) //specify this table will auto generate an ID
-//     private int id;
-    
-//     private double amount = 0;
-//     private String desc;
-//     private String status = "pending";
-//     private int empId;
+import javax.persistence.*;
 
-//     @OneToMany(mappedBy = "tickets")
-//     private List<Ticket> tickets;
+import org.springframework.beans.factory.annotation.Value;
 
-//     public Ticket() {
-//         this.tickets = new ArrayList<>();
-//     }
+import lombok.Data;
 
-// }
+@Entity
+public @Data class Ticket {
+
+    @Id // specifies a primary key should be made
+    @GeneratedValue(strategy = GenerationType.AUTO) // specify this table will auto generate an ID
+    @Column(name = "ticketid")
+    private int id;
+
+    // default value
+    @Value("0")
+    private double amount = 0;
+
+    // default value
+    @Value("...")
+    private String description;
+
+    // default value
+    @Value("pending")
+    private String status;
+
+    @ManyToOne()
+    @JoinColumn(name="empid", nullable=false)
+    private Employee employee;
+
+    // we point the List obj to a new ArrayList to make sure there's no null pointer
+    // exceptions   
+    //   public Ticket(Ticket tickets) {
+    //       this.employees = new ArrayList<>();
+    //   }
+
+}

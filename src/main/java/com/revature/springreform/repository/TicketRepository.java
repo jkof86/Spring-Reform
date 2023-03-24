@@ -1,4 +1,24 @@
+package com.revature.springreform.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.revature.springreform.model.Employee;
+import com.revature.springreform.model.Ticket;
+
+@Repository
+public interface TicketRepository extends JpaRepository<Ticket, Integer>{
+    /*
+       Repo CRUD operations
+        .save(),
+        .delete(),
+        .update(),
+        etc.
+    */
+
+    //Spring data will automatically implment this abstract method for you as long as you follow their keywords
+    //public List<Employee> findByName(String name);
+}
 
 
 

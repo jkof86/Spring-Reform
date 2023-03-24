@@ -6,8 +6,8 @@ spring:
     password:
   jpa:
     hibernate:
-      #create-drop is for production since it will recreate your tables over again
-      #update all it does is update your tables and it will not recreate 
+      #create-drop is for initial testing since it will recreate your tables over again
+      #update all it does is update your tables and it will not recreate (persistent for production)
       #validate will just validate that schema should be the same
       ddl-auto: create-drop
     show-sql: true
