@@ -2,6 +2,7 @@ package com.revature.springreform.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,10 +34,17 @@ public class Controller {
          return empServ.getEmployeeList();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "id")
-    public Optional<Employee> getEmployeeById(@RequestBody Employee employee)
+    @RequestMapping(method = RequestMethod.GET, value = "{id}")
+    public Employee getEmployeeById(@PathVariable(name="id", required=true) int id)
     {
-         return empServ.getEmployeeById(employee);
+         return empServ.getEmployeeById(id);
+    }
+
+    //we pass email and pass as path variables
+    @RequestMapping(method = RequestMethod.GET, value = "login/{email}&{pass}")
+    public boolean getEmployeeById(@PathVariable String email, @PathVariable String pass)
+    {
+         return empServ.loginEmployee(email, pass);
     }
 }
 

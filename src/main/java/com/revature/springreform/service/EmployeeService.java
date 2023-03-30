@@ -3,6 +3,7 @@ package com.revature.springreform.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.revature.springreform.model.Employee;
@@ -10,47 +11,58 @@ import com.revature.springreform.repository.EmployeeRepository;
 
 @Service
 public class EmployeeService {
-    
+
     private EmployeeRepository empRepo;
 
     public EmployeeService(EmployeeRepository empRepo) {
         this.empRepo = empRepo;
     }
-    
-    public Employee addEmployee(Employee employee)
-    {
+
+    public Employee addEmployee(Employee employee) {
         empRepo.findById(employee.getEmpid());
         return empRepo.save(employee);
     }
 
-     public List<Employee> getEmployeeList()
-     {
-         return empRepo.findAll();
-     }
+    public List<Employee> getEmployeeList() {
+        return empRepo.findAll();
+    }
 
-     public Optional<Employee> getEmployeeById(Employee employee)
-     {
-         return empRepo.findById(employee.getEmpid()); 
-     }
+    public Employee getEmployeeById(int id) {
+        // we generate a list of all employees
+        List<Employee> empList = empRepo.findAll();
+
+        // we iterate through the list and find the correct id
+        // **not optimized for efficiency** O(n)
+        for (int i = 0; i < empList.size(); i++) {
+            if (empList.get(i).getEmpid() == id) {
+                return empList.get(i);
+            }
+        }
+        // if the employee id isn't found, we return null
+        return null;
+    }
+
+    public boolean loginEmployee(String email, String pass) {
+        // we generate a list of all employees
+        List<Employee> empList = empRepo.findAll();
+
+        // we iterate through the list and check for validation
+        // **not optimized for efficiency** O(n)
+
+        for (int i = 0; i < empList.size(); i++) {
+
+            // then we validate the email and password
+            if (email.equals(empList.get(i).getEmail()) &&
+                    pass.equals(empList.get(i).getPassword())) 
+                    { return true; }
+        }
+        // if there is no email/pass match we return false
+        return false;
+    }
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//-----------------------------------------------------------------------
-
-
+// -----------------------------------------------------------------------
 
 // package com.revature.service;
 
@@ -80,220 +92,233 @@ public class EmployeeService {
 // import com.revature.repository.TicketRepository;
 
 // //here we convert the JSON object into an employee object
-// //then we send the converted information to the repository level for further processing
+// //then we send the converted information to the repository level for further
+// processing
 // public class EmployeeService {
 
-//     private HttpExchange exchange;
+// private HttpExchange exchange;
 
-//     public EmployeeService(HttpExchange exchange) {
-//         this.exchange = exchange;
-//     }
+// public EmployeeService(HttpExchange exchange) {
+// this.exchange = exchange;
+// }
 
-//     private EmployeeRepository repo = new EmployeeRepository(exchange);
-//     private ObjectMapper mapper = new ObjectMapper();
-//     private Employee emp = new Employee();
+// private EmployeeRepository repo = new EmployeeRepository(exchange);
+// private ObjectMapper mapper = new ObjectMapper();
+// private Employee emp = new Employee();
 
-//     public static String convertRequest(HttpExchange exchange) throws IOException {
+// public static String convertRequest(HttpExchange exchange) throws IOException
+// {
 
-//         InputStream is = exchange.getRequestBody();
+// InputStream is = exchange.getRequestBody();
 
-//         // then we convert the request to an object and pass it into the repository
-//         try (Reader reader = new BufferedReader(
-//                 new InputStreamReader(is, Charset.forName(StandardCharsets.UTF_8.name())))) {
+// // then we convert the request to an object and pass it into the repository
+// try (Reader reader = new BufferedReader(
+// new InputStreamReader(is, Charset.forName(StandardCharsets.UTF_8.name())))) {
 
-//             int c = 0;
+// int c = 0;
 
-//             // need to convert input stream to string
-//             // we'll be using StringBuilder
-//             StringBuilder sb = new StringBuilder();
+// // need to convert input stream to string
+// // we'll be using StringBuilder
+// StringBuilder sb = new StringBuilder();
 
-//             // read method from BufferedReader will return -1 when there's no more letters
-//             // left
-//             // we keep reading each letter until theres not more left
-//             while ((c = reader.read()) != -1) {
-//                 sb.append((char) c);
-//             }
-//             return sb.toString();
-//         }
-//     }
+// // read method from BufferedReader will return -1 when there's no more
+// letters
+// // left
+// // we keep reading each letter until theres not more left
+// while ((c = reader.read()) != -1) {
+// sb.append((char) c);
+// }
+// return sb.toString();
+// }
+// }
 
-//     public static void sendResponse(HttpExchange exchange, String response) throws IOException {
-//         // finally we return the response
-//         OutputStream os = exchange.getResponseBody();
-//         // we send the response header first
-//         exchange.sendResponseHeaders((200), response.getBytes().length);
-//         // then we write to the response body and close the connection
-//         os.write(response.getBytes());
-//         os.close();
+// public static void sendResponse(HttpExchange exchange, String response)
+// throws IOException {
+// // finally we return the response
+// OutputStream os = exchange.getResponseBody();
+// // we send the response header first
+// exchange.sendResponseHeaders((200), response.getBytes().length);
+// // then we write to the response body and close the connection
+// os.write(response.getBytes());
+// os.close();
 
-//     }
+// }
 
-//     public void getEmployees(HttpExchange exchange) throws IOException, SQLException {
+// public void getEmployees(HttpExchange exchange) throws IOException,
+// SQLException {
 
-//         // we create a repo object
-//         EmployeeRepository repo = new EmployeeRepository();
-//         // then we create a list of employees to hold the data pulled from the db
-//         List<Employee> currentList = repo.getAllEmployees();
-//         // we convert the list of employees to a json obj
-//         // then we store it in a string to send in the response body
-//         ObjectMapper mapper = new ObjectMapper();
-//         String response = mapper.writeValueAsString(currentList);
+// // we create a repo object
+// EmployeeRepository repo = new EmployeeRepository();
+// // then we create a list of employees to hold the data pulled from the db
+// List<Employee> currentList = repo.getAllEmployees();
+// // we convert the list of employees to a json obj
+// // then we store it in a string to send in the response body
+// ObjectMapper mapper = new ObjectMapper();
+// String response = mapper.writeValueAsString(currentList);
 
-//         // now we retrieve the request body from the exchange
-//         exchange.getRequestBody();
+// // now we retrieve the request body from the exchange
+// exchange.getRequestBody();
 
-//         // then we create a response
-//         exchange.sendResponseHeaders(200, response.getBytes().length);
-//         // we have to save the string into a class that httpServer can handle
-//         OutputStream os = exchange.getResponseBody();
+// // then we create a response
+// exchange.sendResponseHeaders(200, response.getBytes().length);
+// // we have to save the string into a class that httpServer can handle
+// OutputStream os = exchange.getResponseBody();
 
-//         System.out.println("These objects were retrieved from the DB..." + response);
-//         os.write(response.getBytes()); // writing inside the response body
-//         os.close(); // make sure to close the output stream
+// System.out.println("These objects were retrieved from the DB..." + response);
+// os.write(response.getBytes()); // writing inside the response body
+// os.close(); // make sure to close the output stream
 
-//     }
+// }
 
-//     public void register(String jsonObj) throws JsonGenerationException, JsonMappingException, IOException {
+// public void register(String jsonObj) throws JsonGenerationException,
+// JsonMappingException, IOException {
 
-//         // first we convert the jsonObj into an Employee object
+// // first we convert the jsonObj into an Employee object
 
-//         try {
-//             emp = mapper.readValue(jsonObj, Employee.class);
-//         } catch (IOException e) {
-//             // TODO Auto-generated catch block
-//             e.printStackTrace();
-//         }
-//         // print to console for testing
-//         System.out.println("Creating Employee object: \n\n" + emp.toString() + "\n\nand sending to repository...");
+// try {
+// emp = mapper.readValue(jsonObj, Employee.class);
+// } catch (IOException e) {
+// // TODO Auto-generated catch block
+// e.printStackTrace();
+// }
+// // print to console for testing
+// System.out.println("Creating Employee object: \n\n" + emp.toString() +
+// "\n\nand sending to repository...");
 
-//         // then we send the new object to the repository level
+// // then we send the new object to the repository level
 
-//         try {
-//             // if the registration was successful we send a response
-//             if (repo.register(emp)) {
-//                 mapper = new ObjectMapper();
-//                 String response = "The DB was updated successfully!\n" + mapper.writeValueAsString(emp);
-//                 System.out.println(response);
+// try {
+// // if the registration was successful we send a response
+// if (repo.register(emp)) {
+// mapper = new ObjectMapper();
+// String response = "The DB was updated successfully!\n" +
+// mapper.writeValueAsString(emp);
+// System.out.println(response);
 
-//                 exchange.sendResponseHeaders(200, response.getBytes().length);
-//                 OutputStream os = exchange.getResponseBody();
-//                 os.write(response.getBytes());
-//                 os.close();
-//             }
-//             // if the statement fails we send a 400 response and a message
-//             else {
+// exchange.sendResponseHeaders(200, response.getBytes().length);
+// OutputStream os = exchange.getResponseBody();
+// os.write(response.getBytes());
+// os.close();
+// }
+// // if the statement fails we send a 400 response and a message
+// else {
 
-//                 String response = "There was an issue updating the DB...";
-//                 try {
-//                     exchange.sendResponseHeaders(400, response.getBytes().length);
-//                 } catch (IOException e1) {
-//                     // TODO Auto-generated catch block
-//                     e1.printStackTrace();
-//                 }
-//                 OutputStream os = exchange.getResponseBody();
-//                 try {
-//                     os.write(response.getBytes());
-//                     os.close();
-//                 } catch (IOException e1) {
-//                     // TODO Auto-generated catch block
-//                     e1.printStackTrace();
-//                 }
-//             }
+// String response = "There was an issue updating the DB...";
+// try {
+// exchange.sendResponseHeaders(400, response.getBytes().length);
+// } catch (IOException e1) {
+// // TODO Auto-generated catch block
+// e1.printStackTrace();
+// }
+// OutputStream os = exchange.getResponseBody();
+// try {
+// os.write(response.getBytes());
+// os.close();
+// } catch (IOException e1) {
+// // TODO Auto-generated catch block
+// e1.printStackTrace();
+// }
+// }
 
-//         } catch (SQLException e1) {
-//             // TODO Auto-generated catch block
-//             e1.printStackTrace();
-//         }
+// } catch (SQLException e1) {
+// // TODO Auto-generated catch block
+// e1.printStackTrace();
+// }
 
-//     }
+// }
 
-//     public void login(HttpExchange exchange) throws IOException, SQLException {
+// public void login(HttpExchange exchange) throws IOException, SQLException {
 
-//         // we create a repo object
-//         EmployeeRepository repo = new EmployeeRepository();
+// // we create a repo object
+// EmployeeRepository repo = new EmployeeRepository();
 
-//         String sb = convertRequest(exchange);
+// String sb = convertRequest(exchange);
 
-//         // now we pass the string down to the repository for processing
+// // now we pass the string down to the repository for processing
 
-//         ObjectMapper mapper = new ObjectMapper();
+// ObjectMapper mapper = new ObjectMapper();
 
-//         Employee e = repo.verify(sb.toString());
+// Employee e = repo.verify(sb.toString());
 
-//         if (e != null) {
-//             // System.out.println("LOGIN SUCCESSFUL");
-//             String response;
+// if (e != null) {
+// // System.out.println("LOGIN SUCCESSFUL");
+// String response;
 
-//             // we print a manager or employee welcome based on the role id
-//             // role 1 employee, role 2 manager
-//             if (e.getRole() == 2) {
-//                 response = mapper
-//                         .writeValueAsString("LOGIN SUCCESSFUL - MANAGER ID:  " + e.getEmpId() + " " + e.getFname() +
-//                                 " " + e.getLname() + ": " + e.getEmail());
-//             } else {
-//                 response = mapper.writeValueAsString(
-//                         "LOGIN SUCCESSFUL - EMPLOYEE ID:  " + e.getEmpId() + " " + e.getFname() +
-//                                 " " + e.getLname() + ": " + e.getEmail());
-//             }
+// // we print a manager or employee welcome based on the role id
+// // role 1 employee, role 2 manager
+// if (e.getRole() == 2) {
+// response = mapper
+// .writeValueAsString("LOGIN SUCCESSFUL - MANAGER ID: " + e.getEmpId() + " " +
+// e.getFname() +
+// " " + e.getLname() + ": " + e.getEmail());
+// } else {
+// response = mapper.writeValueAsString(
+// "LOGIN SUCCESSFUL - EMPLOYEE ID: " + e.getEmpId() + " " + e.getFname() +
+// " " + e.getLname() + ": " + e.getEmail());
+// }
 
-//             System.out.println();
+// System.out.println();
 
-//             // finally we return the response
-//             sendResponse(exchange, response);
-//         } else {
-//             System.out.println("ERROR: INCORRECT EMAIL OR PW...");
-//             String response = mapper.writeValueAsString("ERROR: INCORRECT EMAIL OR PW...");
+// // finally we return the response
+// sendResponse(exchange, response);
+// } else {
+// System.out.println("ERROR: INCORRECT EMAIL OR PW...");
+// String response = mapper.writeValueAsString("ERROR: INCORRECT EMAIL OR
+// PW...");
 
-//             // finally we return the response
-//             sendResponse(exchange, response);
-//         }
-//     }
+// // finally we return the response
+// sendResponse(exchange, response);
+// }
+// }
 
-//     public void managerLogin(HttpExchange exchange) throws IOException, SQLException {
-//         // we create a repo object
-//         EmployeeRepository repo = new EmployeeRepository();
+// public void managerLogin(HttpExchange exchange) throws IOException,
+// SQLException {
+// // we create a repo object
+// EmployeeRepository repo = new EmployeeRepository();
 
-//         String sb = convertRequest(exchange);
+// String sb = convertRequest(exchange);
 
-//         // now we pass the string down to the repository for processing
+// // now we pass the string down to the repository for processing
 
-//         ObjectMapper mapper = new ObjectMapper();
-//         Employee e = repo.verify(sb.toString());
+// ObjectMapper mapper = new ObjectMapper();
+// Employee e = repo.verify(sb.toString());
 
-//         if (e != null) {
-//             // System.out.println("LOGIN SUCCESSFUL");
-//             // we add a new response for the manager
-//             // which is a current list of all pending tickets
-//             String welcomeManager = "LOGIN SUCCESSFUL - MANAGER ID:  " + e.getEmpId() + " " + e.getFname() +
-//                     " " + e.getLname() + ": " + e.getEmail();
+// if (e != null) {
+// // System.out.println("LOGIN SUCCESSFUL");
+// // we add a new response for the manager
+// // which is a current list of all pending tickets
+// String welcomeManager = "LOGIN SUCCESSFUL - MANAGER ID: " + e.getEmpId() + "
+// " + e.getFname() +
+// " " + e.getLname() + ": " + e.getEmail();
 
-//             // we print a manager or employee welcome based on the role id
-//             // role 1 employee, role 2 manager
-//             if (e.getRole() == 2) {
-//                 TicketRepository trepo = new TicketRepository();
-//                 List<Ticket> listofTickets = new ArrayList<Ticket>();
+// // we print a manager or employee welcome based on the role id
+// // role 1 employee, role 2 manager
+// if (e.getRole() == 2) {
+// TicketRepository trepo = new TicketRepository();
+// List<Ticket> listofTickets = new ArrayList<Ticket>();
 
-//                 // if we detect a manager we immediately gather a list of pending tickets
-//                 // and we pass that list back to the client in the response body
-//                 listofTickets = trepo.getAllTickets();
+// // if we detect a manager we immediately gather a list of pending tickets
+// // and we pass that list back to the client in the response body
+// listofTickets = trepo.getAllTickets();
 
-//                 String pendingTickets = listofTickets.toString();
+// String pendingTickets = listofTickets.toString();
 
-//                 // we send a response with the managers welcome and a list of pending tickets
-//                 String response = mapper.writeValueAsString(welcomeManager + pendingTickets);
+// // we send a response with the managers welcome and a list of pending tickets
+// String response = mapper.writeValueAsString(welcomeManager + pendingTickets);
 
-//                 // finally we return the response
-//                 sendResponse(exchange, response);
+// // finally we return the response
+// sendResponse(exchange, response);
 
-//             }
+// }
 
-//             else {
-//                 System.out.println("ERROR: INCORRECT EMAIL OR PW...");
-//                 String response = mapper.writeValueAsString("ERROR: INCORRECT EMAIL OR PW...");
+// else {
+// System.out.println("ERROR: INCORRECT EMAIL OR PW...");
+// String response = mapper.writeValueAsString("ERROR: INCORRECT EMAIL OR
+// PW...");
 
-//                 // finally we return the response
-//                 sendResponse(exchange, response);
-//             }
-//         }
-//     }
+// // finally we return the response
+// sendResponse(exchange, response);
+// }
+// }
+// }
 // }
