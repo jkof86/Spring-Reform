@@ -28,7 +28,6 @@ pipeline {
                 
                 //Run latest version of image in a container
                 sh 'sudo docker run -p 80:4500 -e url=$url -e user=$user -e pass=$pass jkof86/p0reform:latest'
-                
             }
         }
     }
