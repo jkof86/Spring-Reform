@@ -1,10 +1,11 @@
 FROM openjdk:8-jre-alpine
 
-COPY . ./target
+# ENV url=$url
+# ENV user=$user
+# ENV pass=$pass
 
-ENV url=$url
-ENV pguser=$pguser
-ENV pgpassword=$pgpassword
+COPY target/*.jar app.jar
 
 EXPOSE 4500
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
