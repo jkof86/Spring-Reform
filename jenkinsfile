@@ -24,7 +24,7 @@ pipeline {
         stage('Deploying into docker container') {
             steps {
                 //Stop all running containers
-                sh 'sudo docker rm -f $(sudo docker ps -f name=p0reform -q)'
+                sh 'sudo docker rm -f'
                 
                 //Run latest version of image in a container
                 sh 'sudo docker run -p 80:4500 -e url=$url -e user=$user -e pass=$pass jkof86/p0reform:latest'
