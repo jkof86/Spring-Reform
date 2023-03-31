@@ -1,8 +1,8 @@
 FROM openjdk:8-jre-alpine
 
-# ENV url=$url
-# ENV user=$user
-# ENV pass=$pass
+ENV url=$url
+ENV user=$user
+ENV pass=$pass
 
 COPY target/*.jar app.jar
 
