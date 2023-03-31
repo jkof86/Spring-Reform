@@ -30,7 +30,7 @@ public @Data class Ticket {
     private String status;
 
     @ManyToOne()
-    @JoinColumn(name="empid", nullable=false)
+    @JoinColumn(name="empid")
     private Employee employee;
 
     // we point the List obj to a new ArrayList to make sure there's no null pointer
